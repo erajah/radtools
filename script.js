@@ -6,8 +6,8 @@ async function plotChart(age, size, sex) {
   const ages = filteredData.map(entry => entry.age);
 
   // Array of shades of red for the percentiles
-  const redShades = [
-    "#ff0000", "#ff3333", "#ff6666", "#ff9999", "#ffcccc", "#ffb3b3", "#ff8080"
+  const greyShades = [
+    "#212121", "#424242", "#616161", "#757575", "#9E9E9E", "#BDBDBD", "#EOEOEO"
   ];
 
   const percentileLabels = [
@@ -17,7 +17,7 @@ async function plotChart(age, size, sex) {
   const datasets = ['p2_5', 'p10', 'p25', 'p50', 'p75', 'p90', 'p97_5'].map((key, idx) => ({
     label: percentileLabels[idx],  // Corrected labels for percentiles
     data: filteredData.map(entry => entry[key]),
-    borderColor: redShades[idx],  // Use the red shades for percentiles
+    borderColor: greyShades[idx],  // Use the red shades for percentiles
     fill: false,
     tension: 0.3
   }));
