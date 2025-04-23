@@ -5,15 +5,15 @@ async function plotChart(age, size, sex) {
 
   const ages = filteredData.map(entry => entry.age);
 
-  // Array of shades of grey for the percentiles
-  const greyShades = [
-    "#212121", 
-    "#424242", 
-    "#616161", 
-    "#757575", 
-    "#9E9E9E", 
-    "#BDBDBD", 
-    "#E0E0E0"
+  // Array of fixed red shades for percentiles, including the corrected 97.5th percentile color
+  const redShades = [
+    "#ff0000",   // 2.5th %ile
+    "#ff3333",   // 10th %ile
+    "#ff6666",   // 25th %ile
+    "#ff9999",   // 50th %ile
+    "#ffcccc",   // 75th %ile
+    "#ffb3b3",   // 90th %ile
+    "#ff4d4d"    // 97.5th %ile (corrected)
   ];
 
   const percentileLabels = [
@@ -23,7 +23,7 @@ async function plotChart(age, size, sex) {
   const datasets = ['p2_5', 'p10', 'p25', 'p50', 'p75', 'p90', 'p97_5'].map((key, idx) => ({
     label: percentileLabels[idx],  // Corrected labels for percentiles
     data: filteredData.map(entry => entry[key]),
-    borderColor: greyShades[idx],  // Use the grey shades for percentiles
+    borderColor: redShades[idx],  // Use the fixed red shades for percentiles
     fill: false,
     tension: 0.3
   }));
@@ -73,8 +73,11 @@ window.onload = () => {
     e.preventDefault();
     const age = parseFloat(document.getElementById("age").value);
     const size = parseFloat(document.getElementById("size").value);
-    const sex = document.querySelector('input[name="sex"]:checked').value;
+
+    // Get checked checkboxes
+    const sex = document.querySelector('input[name="sex"]:checked');
     if (!sex || isNaN(age) || isNaN(size)) return;
-    await plotChart(age, size, sex);
+    
+    await plotChart(age, size, sex.value); // Pass the selected sex value
   });
 };
