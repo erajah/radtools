@@ -1,166 +1,61 @@
-// Function to calculate and plot the chart
 async function plotChart(age, size, sex) {
-  // Fetch and parse the data from the JSON file
   const response = await fetch("data.json");
   const data = await response.json();
-
-  // Filter the data for the selected sex
   const filteredData = data.filter(entry => entry.sex === sex);
 
-  if (filteredData.length === 0) {
-    alert("No data found for the selected sex.");
-    return;
-  }
-
-  // Prepare the labels for the X-axis (ages for the sex chosen)
   const ages = filteredData.map(entry => entry.age);
+  const datasets = ['p2_5', 'p10', 'p25', 'p50', 'p75', 'p90', 'p97_5'].map((key, idx) => ({
+    label: key.replace('_', '.').toUpperCase() + ' Percentile',
+    data: filteredData.map(entry => entry[key]),
+    borderColor: `hsl(${idx * 50}, 70%, 50%)`,
+    fill: false,
+    tension: 0.3
+  }));
 
-  // Extract percentiles data for the Y-axis (kidney size in cm)
-  const p2_5 = filteredData.map(entry => entry.p2_5);
-  const p10 = filteredData.map(entry => entry.p10);
-  const p25 = filteredData.map(entry => entry.p25);
-  const p50 = filteredData.map(entry => entry.p50);
-  const p75 = filteredData.map(entry => entry.p75);
-  const p90 = filteredData.map(entry => entry.p90);
-  const p97_5 = filteredData.map(entry => entry.p97_5);
+  const userData = new Array(ages.length).fill(null);
+  const closestIndex = ages.reduce((prevIdx, currAge, idx) => 
+    Math.abs(currAge - age) < Math.abs(ages[prevIdx] - age) ? idx : prevIdx, 0);
+  userData[closestIndex] = size;
 
-  // Create the chart using Chart.js
-  const ctx = document.getElementById('chart').getContext('2d');
-  const chart = new Chart(ctx, {
-    type: 'line',
+  datasets.push({
+    label: "User Input",
+    data: userData,
+    borderColor: "red",
+    backgroundColor: "red",
+    pointRadius: 6,
+    pointBackgroundColor: "red",
+    fill: false,
+    showLine: false
+  });
+
+  const ctx = document.getElementById("chart").getContext("2d");
+  if (window.kidneyChart) window.kidneyChart.destroy();
+
+  window.kidneyChart = new Chart(ctx, {
+    type: "line",
     data: {
       labels: ages,
-      datasets: [
-        {
-          label: '2.5th Percentile',
-          data: p2_5,
-          borderColor: 'rgba(59, 130, 246, 0.7)',
-          fill: false,
-          tension: 0.1
-        },
-        {
-          label: '10th Percentile',
-          data: p10,
-          borderColor: 'rgba(34, 197, 94, 0.7)',
-          fill: false,
-          tension: 0.1
-        },
-        {
-          label: '25th Percentile',
-          data: p25,
-          borderColor: 'rgba(251, 146, 60, 0.7)',
-          fill: false,
-          tension: 0.1
-        },
-        {
-          label: '50th Percentile',
-          data: p50,
-          borderColor: 'rgba(34, 197, 94, 1)',
-          fill: false,
-          tension: 0.1
-        },
-        {
-          label: '75th Percentile',
-          data: p75,
-          borderColor: 'rgba(251, 146, 60, 1)',
-          fill: false,
-          tension: 0.1
-        },
-        {
-          label: '90th Percentile',
-          data: p90,
-          borderColor: 'rgba(59, 130, 246, 1)',
-          fill: false,
-          tension: 0.1
-        },
-        {
-          label: '97.5th Percentile',
-          data: p97_5,
-          borderColor: 'rgba(15, 23, 42, 1)',
-          fill: false,
-          tension: 0.1
-        },
-        {
-          label: 'User Input',
-          data: new Array(ages.length).fill(null),  // Fill with empty values initially
-          borderColor: 'red',
-          backgroundColor: 'red',
-          pointRadius: 6,
-          pointBackgroundColor: 'red',
-          fill: false,
-          // Plot user input at specific age
-          pointHoverRadius: 10,
-          pointHitRadius: 15,
-        }
-      ]
+      datasets: datasets
     },
     options: {
       responsive: true,
       scales: {
         x: {
-          title: {
-            display: true,
-            text: 'Age (years)'
-          },
-          // Set the minimum and maximum to ensure the user input falls within the range of the x-axis
-          min: Math.min(...ages) - 1,
-          max: Math.max(...ages) + 1
+          title: { display: true, text: "Age (years)" }
         },
         y: {
-          title: {
-            display: true,
-            text: 'Kidney Size (cm)'
-          },
-          beginAtZero: false,
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        tooltip: {
-          callbacks: {
-            label: function(tooltipItem) {
-              return tooltipItem.raw + ' cm';
-            }
-          }
+          title: { display: true, text: "Kidney Size (cm)" }
         }
       }
     }
   });
-
-  // Now, we need to update the user's input position on the chart at the correct age
-  const userAgeIndex = ages.indexOf(age);
-  if (userAgeIndex !== -1) {
-    chart.data.datasets[7].data[userAgeIndex] = size;  // Set the user's size at the correct index
-    chart.update();
-  } else {
-    alert("The provided age is out of the range of the data.");
-  }
 }
 
-// Function to handle form submission and invoke the plot
-async function handleSubmit(event) {
-  event.preventDefault();
-  
-  // Get the user input values
-  const age = parseInt(document.getElementById("age").value);
+document.getElementById("kidneyForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const age = parseFloat(document.getElementById("age").value);
   const size = parseFloat(document.getElementById("size").value);
   const sex = document.querySelector('input[name="sex"]:checked').value;
-
-  // Validate the input values
-  if (isNaN(age) || isNaN(size) || !sex) {
-    alert("Please fill in all the fields correctly.");
-    return;
-  }
-
-  // Display the result text
-  const result = document.getElementById("result");
-  result.textContent = `Your kidney size: ${size} cm for Age: ${age} years and Sex: ${sex === 'M' ? 'Male' : 'Female'}`;
-
-  // Plot the chart
+  if (!sex || isNaN(age) || isNaN(size)) return;
   await plotChart(age, size, sex);
-}
-
-// Add event listener for form submission
-document.getElementById("kidneyForm").addEventListener("submit", handleSubmit);
+});
