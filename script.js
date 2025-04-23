@@ -13,7 +13,7 @@ async function plotChart(age, size, sex) {
   }));
 
   const userData = new Array(ages.length).fill(null);
-  const closestIndex = ages.reduce((prevIdx, currAge, idx) => 
+  const closestIndex = ages.reduce((prevIdx, currAge, idx) =>
     Math.abs(currAge - age) < Math.abs(ages[prevIdx] - age) ? idx : prevIdx, 0);
   userData[closestIndex] = size;
 
@@ -51,11 +51,13 @@ async function plotChart(age, size, sex) {
   });
 }
 
-document.getElementById("kidneyForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const age = parseFloat(document.getElementById("age").value);
-  const size = parseFloat(document.getElementById("size").value);
-  const sex = document.querySelector('input[name="sex"]:checked').value;
-  if (!sex || isNaN(age) || isNaN(size)) return;
-  await plotChart(age, size, sex);
-});
+window.onload = () => {
+  document.getElementById("kidneyForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const age = parseFloat(document.getElementById("age").value);
+    const size = parseFloat(document.getElementById("size").value);
+    const sex = document.querySelector('input[name="sex"]:checked').value;
+    if (!sex || isNaN(age) || isNaN(size)) return;
+    await plotChart(age, size, sex);
+  });
+};
