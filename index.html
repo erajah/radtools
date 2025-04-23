@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pediatric Normative Kidney Length</title>
+  <title>Kidney Size Percentile Calculator</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>Pediatric Normative Kidney Length</h1>
+    <h1>Kidney Size Percentile Calculator</h1>
     <form id="kidneyForm">
       <div class="form-group">
         <label for="sex-male">
@@ -26,7 +26,7 @@
       </div>
 
       <div class="form-group">
-        <label for="size">Kidney Length (cm):</label>
+        <label for="size">Kidney Size (cm):</label>
         <input type="number" id="size" required>
       </div>
 
@@ -34,6 +34,12 @@
     </form>
 
     <canvas id="chart" width="400" height="200"></canvas>
+  </div>
+
+  <!-- References section -->
+  <div class="references">
+    <h2>References</h2>
+    <p>Obrycki Ł, Sarnecki J, Lichosik M, et al. Kidney length normative values in children aged 0-19 years - a multicenter study. <i>Pediatr Nephrol.</i> 2022;37(5):1075-1085. doi:10.1007/s00467-021-05303-5</p>
   </div>
 
   <script src="script.js"></script>
