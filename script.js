@@ -7,7 +7,7 @@ async function plotChart(age, size, sex) {
   // Filter the data for the selected sex
   const filteredData = data.filter(entry => entry.sex === sex);
 
-  if (!filteredData.length) {
+  if (filteredData.length === 0) {
     alert("No data found for the selected sex.");
     return;
   }
@@ -88,6 +88,12 @@ async function plotChart(age, size, sex) {
           pointRadius: 6,
           pointBackgroundColor: 'red',
           fill: false,
+          // User input's X position should match the selected age
+          pointHoverRadius: 10,
+          pointHitRadius: 15,
+          // Plot the user input at the specific age
+          xAxisID: 'x',
+          yAxisID: 'y'
         }
       ]
     },
@@ -98,7 +104,10 @@ async function plotChart(age, size, sex) {
           title: {
             display: true,
             text: 'Age (years)'
-          }
+          },
+          // Set the minimum and maximum to ensure the user input falls within the range of the x-axis
+          min: Math.min(...ages) - 1,
+          max: Math.max(...ages) + 1
         },
         y: {
           title: {
@@ -149,4 +158,3 @@ async function handleSubmit(event) {
 
 // Add event listener for form submission
 document.getElementById("kidneyForm").addEventListener("submit", handleSubmit);
-
