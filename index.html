@@ -90,7 +90,15 @@
     function calculate() {
       const age = parseInt(document.getElementById("age").value);
       const sex = document.getElementById("sex").value;
-      const size = parseFloat(document.getElementById("size").value);
+      let size = parseFloat(document.getElementById("size").value);
+
+      if (isNaN(size) || size <= 0) {
+        document.getElementById("output").textContent = "Please enter a valid kidney size in cm.";
+        return;
+      }
+
+      // Convert size from millimeters to centimeters if needed
+      size = size / 10;
 
       const match = normativeData.find(row => row.age === age && row.sex === sex);
       if (!match) {
