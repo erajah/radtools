@@ -9,22 +9,31 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 p-6">
-  <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-xl">
-    <h1 class="text-2xl font-bold mb-6 text-center">Kidney Size Percentile Calculator</h1>
-    <form id="kidneyForm" class="space-y-4">
-      <input type="number" id="age" placeholder="Age (years)" class="w-full p-2 border rounded" required />
-      <input type="number" id="size" step="0.1" placeholder="Kidney size (cm)" class="w-full p-2 border rounded" required />
-      <div class="flex items-center space-x-4">
-        <label><input type="radio" name="sex" value="M" required /> Male</label>
-        <label><input type="radio" name="sex" value="F" /> Female</label>
+<body class="bg-gradient-to-br from-blue-50 to-white min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-xl bg-white p-8 rounded-3xl shadow-2xl border border-gray-200">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Kidney Size Percentile Calculator</h1>
+    
+    <form id="kidneyForm" class="space-y-5">
+      <input type="number" id="age" placeholder="Age (years)" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-300" required />
+      <input type="number" id="size" step="0.1" placeholder="Kidney size (cm)" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-300" required />
+      
+      <div class="flex justify-center space-x-6 text-lg font-medium">
+        <label class="flex items-center space-x-2">
+          <input type="radio" name="sex" value="M" required class="accent-blue-600" />
+          <span>Male</span>
+        </label>
+        <label class="flex items-center space-x-2">
+          <input type="radio" name="sex" value="F" class="accent-pink-500" />
+          <span>Female</span>
+        </label>
       </div>
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Calculate</button>
+      
+      <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition">Calculate</button>
     </form>
-    <div class="mt-6">
-      <p id="result" class="text-center font-semibold"></p>
-      <canvas id="chart" class="mt-4"></canvas>
+
+    <div class="mt-8 text-center">
+      <p id="result" class="text-xl font-semibold text-gray-700"></p>
+      <canvas id="chart" class="mt-6 max-h-96"></canvas>
     </div>
   </div>
 </body>
-</html>
