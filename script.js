@@ -1,6 +1,6 @@
 
 async function fetchData() {
-    const response = await fetch('data.json');
+    const response = await fetch('kidney_children.json');
     return await response.json();
 }
 
