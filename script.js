@@ -7,7 +7,7 @@ async function plotChart(age, size, sex) {
 
   // Array of shades of red for the percentiles
   const greyShades = [
-    "#212121", "#424242", "#616161", "#757575", "#9E9E9E", "#BDBDBD", "#EOEOEO"
+    "#212121", "#424242", "#616161", "#757575", "#9E9E9E", "#BDBDBD", "#EEEEEE"
   ];
 
   const percentileLabels = [
