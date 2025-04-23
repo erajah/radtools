@@ -1,0 +1,9 @@
+/* style.css */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+input:focus, button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
