@@ -26,7 +26,7 @@ async function plotChart(age, size, sex) {
 
   // Create the chart using Chart.js
   const ctx = document.getElementById('chart').getContext('2d');
-  new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: ages,
@@ -82,18 +82,15 @@ async function plotChart(age, size, sex) {
         },
         {
           label: 'User Input',
-          data: [size], // Plot the user's kidney size
+          data: new Array(ages.length).fill(null),  // Fill with empty values initially
           borderColor: 'red',
           backgroundColor: 'red',
           pointRadius: 6,
           pointBackgroundColor: 'red',
           fill: false,
-          // User input's X position should match the selected age
+          // Plot user input at specific age
           pointHoverRadius: 10,
           pointHitRadius: 15,
-          // Plot the user input at the specific age
-          xAxisID: 'x',
-          yAxisID: 'y'
         }
       ]
     },
@@ -131,6 +128,15 @@ async function plotChart(age, size, sex) {
       }
     }
   });
+
+  // Now, we need to update the user's input position on the chart at the correct age
+  const userAgeIndex = ages.indexOf(age);
+  if (userAgeIndex !== -1) {
+    chart.data.datasets[7].data[userAgeIndex] = size;  // Set the user's size at the correct index
+    chart.update();
+  } else {
+    alert("The provided age is out of the range of the data.");
+  }
 }
 
 // Function to handle form submission and invoke the plot
