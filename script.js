@@ -10,8 +10,12 @@ async function plotChart(age, size, sex) {
     "#ff0000", "#ff3333", "#ff6666", "#ff9999", "#ffcccc", "#ffb3b3", "#ff8080"
   ];
 
+  const percentileLabels = [
+    "2.5th %ile", "10th %ile", "25th %ile", "50th %ile", "75th %ile", "90th %ile", "97.5th %ile"
+  ];
+
   const datasets = ['p2_5', 'p10', 'p25', 'p50', 'p75', 'p90', 'p97_5'].map((key, idx) => ({
-    label: `${[2.5, 10, 25, 50, 75, 90, 97.5][idx]}th %ile`,  // Update labels
+    label: percentileLabels[idx],  // Corrected labels for percentiles
     data: filteredData.map(entry => entry[key]),
     borderColor: redShades[idx],  // Use the red shades for percentiles
     fill: false,
