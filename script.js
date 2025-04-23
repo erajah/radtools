@@ -13,7 +13,7 @@ async function plotChart(age, size, sex) {
     "#757575", 
     "#9E9E9E", 
     "#BDBDBD", 
-    "#EEEEEE"
+    "#E0E0E0"
   ];
 
   const percentileLabels = [
