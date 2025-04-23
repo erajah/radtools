@@ -4,25 +4,25 @@ async function plotChart(age, size, sex) {
   const response = await fetch("data.json");
   const data = await response.json();
 
-  // Filter the data based on the selected age and sex
-  const filteredData = data.filter(entry => entry.age === age && entry.sex === sex)[0];
+  // Filter the data for the selected sex
+  const filteredData = data.filter(entry => entry.sex === sex);
 
-  if (!filteredData) {
-    alert("No data found for the selected age and sex.");
+  if (!filteredData.length) {
+    alert("No data found for the selected sex.");
     return;
   }
 
   // Prepare the labels for the X-axis (ages for the sex chosen)
-  const ages = data.filter(entry => entry.sex === sex).map(entry => entry.age);
+  const ages = filteredData.map(entry => entry.age);
 
   // Extract percentiles data for the Y-axis (kidney size in cm)
-  const p2_5 = data.filter(entry => entry.sex === sex).map(entry => entry.p2_5);
-  const p10 = data.filter(entry => entry.sex === sex).map(entry => entry.p10);
-  const p25 = data.filter(entry => entry.sex === sex).map(entry => entry.p25);
-  const p50 = data.filter(entry => entry.sex === sex).map(entry => entry.p50);
-  const p75 = data.filter(entry => entry.sex === sex).map(entry => entry.p75);
-  const p90 = data.filter(entry => entry.sex === sex).map(entry => entry.p90);
-  const p97_5 = data.filter(entry => entry.sex === sex).map(entry => entry.p97_5);
+  const p2_5 = filteredData.map(entry => entry.p2_5);
+  const p10 = filteredData.map(entry => entry.p10);
+  const p25 = filteredData.map(entry => entry.p25);
+  const p50 = filteredData.map(entry => entry.p50);
+  const p75 = filteredData.map(entry => entry.p75);
+  const p90 = filteredData.map(entry => entry.p90);
+  const p97_5 = filteredData.map(entry => entry.p97_5);
 
   // Create the chart using Chart.js
   const ctx = document.getElementById('chart').getContext('2d');
@@ -149,3 +149,4 @@ async function handleSubmit(event) {
 
 // Add event listener for form submission
 document.getElementById("kidneyForm").addEventListener("submit", handleSubmit);
+
