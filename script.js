@@ -1,102 +1,151 @@
-let data = [];
-
-window.addEventListener("DOMContentLoaded", async () => {
+// Function to calculate and plot the chart
+async function plotChart(age, size, sex) {
+  // Fetch and parse the data from the JSON file
   const response = await fetch("data.json");
-  data = await response.json();
+  const data = await response.json();
 
-  document.getElementById("kidneyForm").addEventListener("submit", handleSubmit);
-});
+  // Filter the data based on the selected age and sex
+  const filteredData = data.filter(entry => entry.age === age && entry.sex === sex)[0];
 
-function handleSubmit(event) {
-  event.preventDefault();
-
-  const age = parseInt(document.getElementById("age").value);
-  const size = parseFloat(document.getElementById("size").value);
-  const sex = document.querySelector('input[name="sex"]:checked').value;
-
-  const match = data.find(row => row.age === age && row.sex === sex);
-
-  if (!match) {
-    document.getElementById("result").textContent = "No data available for this age and sex.";
+  if (!filteredData) {
+    alert("No data found for the selected age and sex.");
     return;
   }
 
-  const percentiles = [
-    { label: "2.5th", value: match.p2_5 },
-    { label: "10th", value: match.p10 },
-    { label: "25th", value: match.p25 },
-    { label: "50th", value: match.p50 },
-    { label: "75th", value: match.p75 },
-    { label: "90th", value: match.p90 },
-    { label: "97.5th", value: match.p97_5 },
-  ];
+  // Prepare the labels for the X-axis (ages for the sex chosen)
+  const ages = data.filter(entry => entry.sex === sex).map(entry => entry.age);
 
-  const percentile = getPercentile(size, percentiles);
+  // Extract percentiles data for the Y-axis (kidney size in cm)
+  const p2_5 = data.filter(entry => entry.sex === sex).map(entry => entry.p2_5);
+  const p10 = data.filter(entry => entry.sex === sex).map(entry => entry.p10);
+  const p25 = data.filter(entry => entry.sex === sex).map(entry => entry.p25);
+  const p50 = data.filter(entry => entry.sex === sex).map(entry => entry.p50);
+  const p75 = data.filter(entry => entry.sex === sex).map(entry => entry.p75);
+  const p90 = data.filter(entry => entry.sex === sex).map(entry => entry.p90);
+  const p97_5 = data.filter(entry => entry.sex === sex).map(entry => entry.p97_5);
 
-  document.getElementById("result").textContent = `Your kidney size is at the ~${percentile} percentile for a ${sex === 'M' ? 'male' : 'female'} age ${age}.`;
-
-  renderChart(percentiles, size);
-}
-
-function getPercentile(size, percentiles) {
-  for (let i = 0; i < percentiles.length - 1; i++) {
-    const current = percentiles[i];
-    const next = percentiles[i + 1];
-    if (size < current.value) return current.label;
-    if (size >= current.value && size < next.value) {
-      return `${current.label}–${next.label}`;
-    }
-  }
-  return size >= percentiles[percentiles.length - 1].value ? "above 97.5th" : "below 2.5th";
-}
-
-let chart;
-function renderChart(percentiles, size) {
-  const ctx = document.getElementById("chart").getContext("2d");
-
-  const labels = percentiles.map(p => p.label);
-  const values = percentiles.map(p => p.value);
-
-  const datasets = [
-    {
-      label: "Kidney size percentiles",
-      data: values,
-      backgroundColor: "rgba(59, 130, 246, 0.2)",
-      borderColor: "rgba(59, 130, 246, 1)",
-      fill: false,
-      tension: 0.3,
-    },
-    {
-      label: "Your kidney size",
-      data: Array(percentiles.length).fill(null).map((_, i) => (i === 3 ? size : null)),
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-      borderColor: "rgba(255, 99, 132, 1)",
-      borderWidth: 2,
-      pointRadius: 6,
-      type: 'line',
-      fill: false,
-    }
-  ];
-
-  if (chart) chart.destroy();
-
-  chart = new Chart(ctx, {
-    type: "line",
+  // Create the chart using Chart.js
+  const ctx = document.getElementById('chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
     data: {
-      labels: labels,
-      datasets: datasets,
+      labels: ages,
+      datasets: [
+        {
+          label: '2.5th Percentile',
+          data: p2_5,
+          borderColor: 'rgba(59, 130, 246, 0.7)',
+          fill: false,
+          tension: 0.1
+        },
+        {
+          label: '10th Percentile',
+          data: p10,
+          borderColor: 'rgba(34, 197, 94, 0.7)',
+          fill: false,
+          tension: 0.1
+        },
+        {
+          label: '25th Percentile',
+          data: p25,
+          borderColor: 'rgba(251, 146, 60, 0.7)',
+          fill: false,
+          tension: 0.1
+        },
+        {
+          label: '50th Percentile',
+          data: p50,
+          borderColor: 'rgba(34, 197, 94, 1)',
+          fill: false,
+          tension: 0.1
+        },
+        {
+          label: '75th Percentile',
+          data: p75,
+          borderColor: 'rgba(251, 146, 60, 1)',
+          fill: false,
+          tension: 0.1
+        },
+        {
+          label: '90th Percentile',
+          data: p90,
+          borderColor: 'rgba(59, 130, 246, 1)',
+          fill: false,
+          tension: 0.1
+        },
+        {
+          label: '97.5th Percentile',
+          data: p97_5,
+          borderColor: 'rgba(15, 23, 42, 1)',
+          fill: false,
+          tension: 0.1
+        },
+        {
+          label: 'User Input',
+          data: [size], // Plot the user's kidney size
+          borderColor: 'red',
+          backgroundColor: 'red',
+          pointRadius: 6,
+          pointBackgroundColor: 'red',
+          fill: false,
+        }
+      ]
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { position: "top" },
-        tooltip: { mode: "index", intersect: false }
-      },
       scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Age (years)'
+          }
+        },
         y: {
-          title: { display: true, text: "Kidney Size (cm)" }
+          title: {
+            display: true,
+            text: 'Kidney Size (cm)'
+          },
+          beginAtZero: false,
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem) {
+              return tooltipItem.raw + ' cm';
+            }
+          }
         }
       }
     }
   });
 }
+
+// Function to handle form submission and invoke the plot
+async function handleSubmit(event) {
+  event.preventDefault();
+  
+  // Get the user input values
+  const age = parseInt(document.getElementById("age").value);
+  const size = parseFloat(document.getElementById("size").value);
+  const sex = document.querySelector('input[name="sex"]:checked').value;
+
+  // Validate the input values
+  if (isNaN(age) || isNaN(size) || !sex) {
+    alert("Please fill in all the fields correctly.");
+    return;
+  }
+
+  // Display the result text
+  const result = document.getElementById("result");
+  result.textContent = `Your kidney size: ${size} cm for Age: ${age} years and Sex: ${sex === 'M' ? 'Male' : 'Female'}`;
+
+  // Plot the chart
+  await plotChart(age, size, sex);
+}
+
+// Add event listener for form submission
+document.getElementById("kidneyForm").addEventListener("submit", handleSubmit);
