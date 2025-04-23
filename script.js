@@ -4,14 +4,21 @@ async function plotChart(age, size, sex) {
   const filteredData = data.filter(entry => entry.sex === sex);
 
   const ages = filteredData.map(entry => entry.age);
+
+  // Array of shades of red for the percentiles
+  const redShades = [
+    "#ff0000", "#ff3333", "#ff6666", "#ff9999", "#ffcccc", "#ffb3b3", "#ff8080"
+  ];
+
   const datasets = ['p2_5', 'p10', 'p25', 'p50', 'p75', 'p90', 'p97_5'].map((key, idx) => ({
-    label: key.replace('_', '.').toUpperCase() + ' Percentile',
+    label: `${[2.5, 10, 25, 50, 75, 90, 97.5][idx]}th %ile`,  // Update labels
     data: filteredData.map(entry => entry[key]),
-    borderColor: `hsl(${idx * 50}, 70%, 50%)`,
+    borderColor: redShades[idx],  // Use the red shades for percentiles
     fill: false,
     tension: 0.3
   }));
 
+  // Prepare user input data
   const userData = new Array(ages.length).fill(null);
   const closestIndex = ages.reduce((prevIdx, currAge, idx) =>
     Math.abs(currAge - age) < Math.abs(ages[prevIdx] - age) ? idx : prevIdx, 0);
