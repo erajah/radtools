@@ -7,13 +7,13 @@ async function plotChart(age, size, sex) {
 
   // Array of fixed red shades for percentiles, including the corrected 97.5th percentile color
   const redShades = [
-    "#ff0000",   // 2.5th %ile
-    "#ff3333",   // 10th %ile
-    "#ff6666",   // 25th %ile
-    "#ff9999",   // 50th %ile
-    "#ffcccc",   // 75th %ile
-    "#ffb3b3",   // 90th %ile
-    "#ff4d4d"    // 97.5th %ile (corrected)
+    "#ffafad",   // 2.5th %ile
+    "#ff9f9c",   // 10th %ile
+    "#ff908a",   // 25th %ile
+    "#ff8077",   // 50th %ile
+    "#ff6f64",   // 75th %ile
+    "#ff5c4f",   // 90th %ile
+    "#ff483a"    // 97.5th %ile (corrected)
   ];
 
   const percentileLabels = [
